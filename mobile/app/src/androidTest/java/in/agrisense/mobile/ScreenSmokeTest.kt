@@ -1,7 +1,10 @@
 package `in`.agrisense.mobile
 
 import android.app.Application
+import android.content.ContentValues
 import android.graphics.Bitmap
+import android.os.Build
+import android.provider.MediaStore
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -11,10 +14,10 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
 import org.junit.After
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.io.File
 
 class ScreenSmokeTest {
     @get:Rule val compose = createComposeRule()
@@ -60,7 +63,12 @@ class ScreenSmokeTest {
     @After fun close() { server.shutdown() }
 
     private fun waitFor(text: String) {
-        compose.waitUntil(15_000) { compose.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty() }
+        try {
+            compose.waitUntil(15_000) { compose.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty() }
+        } catch (failure: AssertionError) {
+            screenshot("failure")
+            throw AssertionError("Waiting for '$text': ${compose.onRoot().printToString()}", failure)
+        }
         compose.waitForIdle()
     }
 
@@ -70,9 +78,14 @@ class ScreenSmokeTest {
 
     private fun screenshot(name: String) {
         compose.waitForIdle()
-        val directory = File(application.getExternalFilesDir(null), "screenshots").apply { mkdirs() }
-        File(directory, "$name.png").outputStream().use {
-            compose.onRoot().captureToImage().asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, it)
+        val values = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, "$name.png")
+            put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+            if (Build.VERSION.SDK_INT >= 29) put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/AgriSense")
+        }
+        val uri = checkNotNull(application.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values))
+        checkNotNull(application.contentResolver.openOutputStream(uri)).use {
+            check(compose.onRoot().captureToImage().asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, it))
         }
     }
 
@@ -136,13 +149,21 @@ class ScreenSmokeTest {
     }
 
     @Test fun offlineNotebookPreservesZero() {
+        waitFor("Welcome back")
         tap("Open offline notebook")
+        compose.runOnIdle { assertTrue("Offline entry did not activate", model.state.value.guest) }
+        waitFor("Field notebook")
         waitFor("Soil test")
         compose.onNodeWithText("Soil test").performClick()
         compose.onNodeWithText("Field name").performTextInput("Offline test field")
         compose.onNodeWithText("Value (pH)").performTextInput("0")
         compose.onNodeWithText("Save locally").performClick()
-        waitFor("Offline test field")
-        compose.onNodeWithText("Soil pH: 0 pH").assertExists()
+        compose.waitUntil(5_000) {
+            ReadingStore(application).use { store -> store.latest().any { it.fieldLabel == "Offline test field" && it.value == "0" } }
+        }
+        compose.waitUntil(5_000) { compose.onAllNodesWithText("Add soil test").fetchSemanticsNodes().isEmpty() }
+        compose.onNode(hasScrollToNodeAction()).performScrollToNode(hasText("Offline test field"))
+        compose.onNodeWithText("Soil pH: 0 pH").assertIsDisplayed()
+        screenshot("21-offline-zero")
     }
 }

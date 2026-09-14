@@ -62,7 +62,7 @@ jobs:
           disable-animations: true
           working-directory: mobile
           script: |
-            if gradle --no-daemon :app:connectedDebugAndroidTest; then adb pull /sdcard/Android/data/in.agrisense.mobile/files/screenshots/ app/build/reports/screenshots/; else adb pull /sdcard/Android/data/in.agrisense.mobile/files/screenshots/ app/build/reports/screenshots/ || true; exit 1; fi
+            if gradle --no-daemon :app:connectedDebugAndroidTest; then adb pull /sdcard/Pictures/AgriSense/ app/build/reports/screenshots/; else adb logcat -d > app/build/reports/emulator-logcat.txt; adb pull /sdcard/Pictures/AgriSense/ app/build/reports/screenshots/ || true; exit 1; fi
       - name: Upload validation reports
         if: ${{ always() }}
         uses: actions/upload-artifact@v4

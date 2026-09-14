@@ -2,6 +2,12 @@
 
 ## Android Screen Suite - 0.2.0
 
+- Correction commit `6947b8a`, run `34818942524`: app and instrumentation
+  compilation, eight JVM tests, lint and APK assembly passed. Authenticated
+  20-screen emulator tour passed. Offline notebook test timed out waiting for
+  the Soil test button, before entering data; investigation remains active.
+  Test screenshots now use shared MediaStore storage to survive app uninstall;
+  notebook checks distinguish entry, persisted zero and lazy-list visibility.
 - Run `34817555583` failed Kotlin compilation before tests/APK generation:
   OkHttp's Kotlin Dns interface cannot accept a lambda, and product soil-list
   saved state needed an explicit List<String> type. Both have been corrected;
