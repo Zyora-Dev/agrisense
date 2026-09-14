@@ -29,7 +29,7 @@ fun observeNetworks(context: Context) = callbackFlow {
         }
     }
     manager.registerNetworkCallback(
-        NetworkRequest.Builder().clearCapabilities().build(), callback, Handler(Looper.getMainLooper()),
+        NetworkRequest.Builder().build(), callback, Handler(Looper.getMainLooper()),
     )
     awaitClose { manager.unregisterNetworkCallback(callback) }
 }
