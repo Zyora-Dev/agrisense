@@ -67,6 +67,10 @@ These are requirements, not claims of completed functionality:
 
 ## Verification status
 
-Local validation can check workflow YAML, XML and source diagnostics. Compilation,
-unit tests, Android lint and phone UI/storage/network tests require the first CI
-run and a physical device; they have not yet been run for this scaffold.
+The first GitHub build compiled the Kotlin sources and passed all five JVM tests,
+but Android lint blocked APK assembly on two API compatibility errors. Those
+uses were removed in commit `9dc3766`. Replacement run `34815346535` passed all
+five tests, lint (zero errors, seven non-blocking warnings) and debug APK assembly.
+The APK is available as `agrisense-debug-3` in that run's artifacts:
+https://github.com/Zyora-Dev/agrisense/actions/runs/34815346535
+Phone UI, SQLite persistence and physical Wi-Fi behavior have not been tested.

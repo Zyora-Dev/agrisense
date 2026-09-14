@@ -1,5 +1,24 @@
 # AgriSense Progress
 
+## Android Compatibility Fix
+
+- First CI run `34814206731` passed all five JVM tests but failed lint on two
+  API-level mismatches: `clearCapabilities()` needs API 30 and the theme's light
+  navigation-bar attribute needs API 27, while the app supports API 26.
+- Commit `9dc3766` removes both unsupported uses without raising minSdk. The
+  default network request does not require INTERNET, preserving observation of
+  ordinary local Wi-Fi networks without validated internet. Physical IoT network
+  behavior still needs device testing.
+- Theme XML and patch whitespace checks pass locally. Replacement CI run:
+  https://github.com/Zyora-Dev/agrisense/actions/runs/34815346535
+  Completed successfully: five tests passed, none failed/skipped; lint has zero
+  errors and seven non-blocking warnings (target/dependency updates and Android
+  12 backup rules). Debug APK assembly and artifact uploads succeeded.
+- APK artifact `agrisense-debug-3` (16,540,957 bytes compressed):
+  https://github.com/Zyora-Dev/agrisense/actions/runs/34815346535/artifacts/10335714929
+  Reports are in `android-reports-3`. No SDK or APK download was needed locally.
+  Phone installation, persistence, UI and actual IoT operation remain unverified.
+
 ## GitHub Repository Setup
 
 - User selected `https://github.com/Zyora-Dev/agrisense.git`; verified accessible
@@ -9,9 +28,9 @@
   training runs and local editor settings. A recognized-credential-pattern scan
   found no matches in staged content; this is not a comprehensive security audit.
 - Initial commit `5681a81` pushed successfully to `origin/main`. Android Debug APK
-  run `34814206731` started and was in progress at this checkpoint:
+  run `34814206731` failed lint:
   https://github.com/Zyora-Dev/agrisense/actions/runs/34814206731
-  No successful build or APK artifact has yet been confirmed.
+  The compatibility fix and successful replacement run are recorded above.
 
 ## Android Foundation - GitHub Build Prepared
 
@@ -31,8 +50,8 @@
   earlier false impression that no JDK was installed. Local disk has only 1.8 GiB
   free, so builds are intended for GitHub, without Android Studio or an emulator.
 - Workflow YAML/build-path assertions and Android XML validation pass locally.
-  GitHub repository setup is tracked above. Kotlin tests, Android lint,
-  persistence and phone UI behavior remain unverified until CI/device testing.
+  The first CI run passed five Kotlin unit tests; lint and APK build status are
+  tracked above. Persistence and phone UI behavior still need device testing.
 - Authentication, account-scoped caching, duplicate-safe upload/outbox, firmware
   protocol/pairing, actual IoT reads and native model inference remain pending.
   Current backend reading POSTs lack idempotency, so no automatic retry/upload
