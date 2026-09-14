@@ -1,5 +1,26 @@
 # AgriSense Progress
 
+## Android Screen Suite - 0.2.0
+
+- Implemented Kotlin/Compose login, registration, configurable API connection,
+  dashboard, farm CRUD, device registration and one-time key display, readings
+  with charts/date filters/manual entry, weather, analysis and farm advice/chat.
+- Added marketplace search/category filters, explicit non-purchasable demo
+  listings, farm-report matches, vendor detail, COD checkout, buyer/seller order
+  filters/actions, vendor onboarding and product editing.
+- Added profile, password change, session revocation, account audit filters,
+  logout and local account removal. Shared light theme, five-tab navigation,
+  bottom-sheet forms, loading/error/empty states and readable source labels.
+- Android Keystore encrypts session and account-scoped cloud cache. Offline
+  cached data is labeled; the SQLite notebook remains phone-wide/local-only.
+  Cloud writes require internet; no automatic reading upload/retry is enabled.
+- Added endpoint/date/JSON JVM checks and isolated Compose screen-tour/notebook
+  tests with hosted-emulator screenshots. Local YAML checks pass; editor reports
+  no diagnostics, but Kotlin compilation, lint and emulator results are PENDING.
+- User approved commit/push for GitHub validation. No Android SDK or emulator
+  installed on the Mac. Native photo inference, real IoT pairing/communication,
+  durable synchronization and physical-phone testing remain unfinished.
+
 ## Android Compatibility Fix
 
 - First CI run `34814206731` passed all five JVM tests but failed lint on two

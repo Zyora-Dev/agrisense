@@ -4,15 +4,28 @@ Native Kotlin + Jetpack Compose, Android 8.0/API 26 or later. Development stays
 in this workspace. Android Studio, an emulator and a local Android SDK are not
 required when building through GitHub Actions.
 
-## First milestone
+## Screen suite (0.2.0)
+
+- Registration/login and configurable API base URL; no production address is
+  assumed. Set the reachable FastAPI base URL from the sign-in server icon.
+  Debug allows HTTP on trusted development networks; release requires HTTPS.
+- Dashboard, farms, devices, readings, weather, crop suitability and farm chat.
+- Marketplace, vendor/product detail, COD orders, sales and business editing.
+- Profile, password, active sessions, security activity and sign-out.
+- Encrypted session and account-scoped cloud cache; cached copies show their
+  timestamp. Cloud mutations require validated internet and are not auto-retried.
+- New screens are awaiting the current GitHub compile/lint/emulator run. The
+  earlier successful notebook-only APK is not validation of this screen suite.
+
+## Offline notebook
 
 - Local field notebook: manual pH/NPK entries persist in app-private SQLite,
   without a login or internet connection. Values retain decimal precision.
 - Wi-Fi presence and Android-validated internet access are tracked separately.
   Wi-Fi presence does NOT prove an AgriSense device is paired or reachable.
-- The settings icon opens Android Wi-Fi settings. It does not provision a device.
+- The local connection screen opens Android Wi-Fi settings; it does not pair a device.
 - Records are marked manual/local-only. Their field names are notebook labels,
-  not authenticated backend farm IDs. No upload is performed by this version.
+  not authenticated backend farm IDs. No notebook upload is performed.
 - The list shows the newest 100 records; older rows remain in the database.
   App data clearing/uninstallation removes records. Automatic backup is disabled.
 
@@ -28,7 +41,8 @@ repository's `.github/workflows` and its paths/working directory must be adjuste
 2. Open Actions > Android Debug APK. Pushes/PRs touching mobile trigger a build;
    Run workflow is also available once the workflow is on the default branch.
 3. The hosted runner installs JDK 17, Gradle 8.11.1 and Android SDK 35, runs unit
-   tests and Android lint, then builds the debug APK.
+  tests and Android lint, builds the debug APK, then runs API-isolated Compose
+  tests on an API 29 emulator. Screenshots are included in validation reports.
 4. Download the `agrisense-debug-<run number>` artifact and unzip it. Transfer
    `app-debug.apk` to an Android phone and allow installation from that source.
 
@@ -54,8 +68,11 @@ These are requirements, not claims of completed functionality:
   bind every app request to an internet-less IoT network.
 - Persist device event IDs, device/farm ownership, source and capture timestamps
   before cloud upload. Preserve simulated versus device versus manual provenance.
-- Add secure account storage and farm-scoped caching. First sign-in needs internet;
-  offline access and expired/revoked-account policy must be explicit.
+- Encrypted account storage and cached reads are implemented. First sign-in needs
+  internet; local expiry signs out the account. Revocation is learned on the next
+  authenticated server response, not while disconnected. Sign-out clears cloud
+  cache but retains the phone-wide notebook. Local removal does not revoke the
+  server session; use online sign-out/session management for server revocation.
 - Add durable retryable outbox synchronization with backend idempotency. Current
   reading POSTs create new rows each time, so blind retry can duplicate readings.
   Do not transmit unassigned notebook records as authenticated farm readings.

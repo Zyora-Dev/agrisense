@@ -40,29 +40,19 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MaterialTheme(colorScheme = lightColorScheme(
-                primary = Color(0xFF087443), onPrimary = Color.White,
-                secondary = Color(0xFF006C78), background = Color(0xFFF4F7F4),
-                surface = Color(0xFFF4F7F4), onSurface = Color(0xFF18251D),
-                onSurfaceVariant = Color(0xFF3D4940),
-            )) { NotebookScreen() }
+            AgriSenseTheme { MobileApp() }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun NotebookScreen(model: NotebookViewModel = viewModel()) {
+fun NotebookScreen(model: NotebookViewModel = viewModel()) {
     val state by model.state.collectAsStateWithLifecycle()
     val network by model.connectivity.collectAsStateWithLifecycle()
     var adding by rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
     Scaffold(
-        topBar = { TopAppBar(title = { Text("AgriSense", fontWeight = FontWeight.SemiBold) }, actions = {
-            IconButton(onClick = { context.startActivity(Intent(Settings.ACTION_WIFI_SETTINGS)) }) {
-                Icon(Icons.Default.Settings, contentDescription = "Wi-Fi settings")
-            }
-        }) },
         floatingActionButton = {
             if (!state.loading) ExtendedFloatingActionButton(
                 onClick = { model.clearError(); adding = true },
@@ -78,14 +68,14 @@ private fun NotebookScreen(model: NotebookViewModel = viewModel()) {
         ) {
             item {
                 Text("Field notebook", style = MaterialTheme.typography.headlineLarge, fontFamily = FontFamily.Serif)
-                Text("On this phone", color = MaterialTheme.colorScheme.secondary)
+                Text("Shared on this phone / Not account-linked", color = MaterialTheme.colorScheme.secondary)
             }
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     ConnectionRow(Icons.Default.Wifi, "Wi-Fi", if (network.wifiAvailable) "Available" else "Not connected")
                     ConnectionRow(Icons.Default.Cloud, "Internet", if (network.internetValidated) "Available" else "Offline")
                     Text("IoT: Not paired", style = MaterialTheme.typography.bodyMedium)
-                    Text("Backend: Not linked", style = MaterialTheme.typography.bodyMedium)
+                    Text("Cloud upload: Off", style = MaterialTheme.typography.bodyMedium)
                     HorizontalDivider()
                 }
             }
