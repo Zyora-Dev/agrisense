@@ -2,6 +2,12 @@
 
 ## Android Screen Suite - 0.2.0
 
+- Run `34817555583` failed Kotlin compilation before tests/APK generation:
+  OkHttp's Kotlin Dns interface cannot accept a lambda, and product soil-list
+  saved state needed an explicit List<String> type. Both have been corrected;
+  replacement cloud compilation is pending. Editor diagnostics alone do not
+  validate Kotlin builds. The workflow now compiles instrumentation tests before
+  emulator startup and preserves screenshots when instrumented tests fail.
 - Implemented Kotlin/Compose login, registration, configurable API connection,
   dashboard, farm CRUD, device registration and one-time key display, readings
   with charts/date filters/manual entry, weather, analysis and farm advice/chat.

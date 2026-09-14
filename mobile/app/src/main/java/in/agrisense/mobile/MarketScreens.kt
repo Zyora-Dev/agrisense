@@ -306,7 +306,7 @@ private fun ProductEditor(model: AppViewModel, product: JSONObject?, dismiss: ()
     var price by rememberSaveable { mutableStateOf(product?.text("price_inr").orEmpty()) }
     var unit by rememberSaveable { mutableStateOf(product?.text("unit").orEmpty()) }
     var crops by rememberSaveable { mutableStateOf(product?.optJSONArray("crops")?.let { values -> (0 until values.length()).joinToString(", ") { values.getString(it) } }.orEmpty()) }
-    var soils by rememberSaveable { mutableStateOf(product?.optJSONArray("soil_types")?.let { values -> (0 until values.length()).map { values.getString(it) } } ?: emptyList()) }
+    var soils by rememberSaveable { mutableStateOf<List<String>>(product?.optJSONArray("soil_types")?.let { values -> (0 until values.length()).map { values.getString(it) } } ?: emptyList()) }
     var stock by rememberSaveable { mutableStateOf(product?.optBoolean("in_stock") ?: true) }
     FormSheet(if (product == null) "Add product" else "Edit product", model, dismiss, {
         model.mutate(if (product == null) "/marketplace/products" else "/marketplace/products/${product.text("id")}", if (product == null) "POST" else "PUT",

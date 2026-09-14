@@ -8,6 +8,7 @@ import android.security.keystore.KeyProperties
 import android.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.Dns
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -91,7 +92,9 @@ class ApiClient(private val context: Context) {
                 } == true
             }
             val transport = if (network == null) client else client.newBuilder()
-                .socketFactory(network.socketFactory).dns { host -> network.getAllByName(host).toList() }.build()
+                .socketFactory(network.socketFactory).dns(object : Dns {
+                    override fun lookup(hostname: String) = network.getAllByName(hostname).toList()
+                }).build()
             val builder = Request.Builder().url(endpoint + path).header("Accept", "application/json")
                 .header("User-Agent", "AgriSense Android/0.2")
             if (token.isNotBlank()) builder.header("Authorization", "Bearer $token")

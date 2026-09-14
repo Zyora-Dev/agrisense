@@ -40,7 +40,7 @@ jobs:
       - name: Install Android build packages
         run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
       - name: Test, lint and build
-        run: gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:lintDebug :app:assembleDebug
+        run: gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:lintDebug :app:assembleDebug :app:assembleDebugAndroidTest
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
@@ -62,8 +62,7 @@ jobs:
           disable-animations: true
           working-directory: mobile
           script: |
-            gradle --no-daemon :app:connectedDebugAndroidTest
-            adb pull /sdcard/Android/data/in.agrisense.mobile/files/screenshots/ app/build/reports/screenshots/
+            if gradle --no-daemon :app:connectedDebugAndroidTest; then adb pull /sdcard/Android/data/in.agrisense.mobile/files/screenshots/ app/build/reports/screenshots/; else adb pull /sdcard/Android/data/in.agrisense.mobile/files/screenshots/ app/build/reports/screenshots/ || true; exit 1; fi
       - name: Upload validation reports
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
