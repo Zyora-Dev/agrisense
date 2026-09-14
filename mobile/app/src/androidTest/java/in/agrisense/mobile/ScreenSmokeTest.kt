@@ -64,9 +64,9 @@ class ScreenSmokeTest {
 
     @After fun close() { server.shutdown() }
 
-    private fun waitFor(text: String) {
+    private fun waitFor(text: String, matcher: SemanticsMatcher = hasText(text)) {
         try {
-            compose.waitUntil(15_000) { compose.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty() }
+            compose.waitUntil(15_000) { compose.onAllNodes(matcher).fetchSemanticsNodes().isNotEmpty() }
         } catch (failure: ComposeTimeoutException) {
             screenshot("failure")
             val notebookState = compose.runOnIdle {
@@ -158,8 +158,8 @@ class ScreenSmokeTest {
         tap("Open offline notebook")
         compose.runOnIdle { assertTrue("Offline entry did not activate", model.state.value.guest) }
         waitFor("Field notebook")
-        waitFor("Soil test")
-        compose.onNodeWithText("Soil test").performClick()
+        waitFor("Add soil test", hasContentDescription("Add soil test"))
+        compose.onNodeWithContentDescription("Add soil test").assertIsDisplayed().performClick()
         compose.onNodeWithText("Field name").performTextInput("Offline test field")
         compose.onNodeWithText("Value (pH)").performTextInput("0")
         compose.onNodeWithText("Save locally").performClick()
@@ -169,6 +169,7 @@ class ScreenSmokeTest {
         compose.waitUntil(5_000) { compose.onAllNodesWithText("Add soil test").fetchSemanticsNodes().isEmpty() }
         compose.onNode(hasScrollToNodeAction()).performScrollToNode(hasText("Offline test field"))
         compose.onNodeWithText("Soil pH: 0 pH").assertIsDisplayed()
+        assertTrue("The local notebook must not call the cloud API", server.requestCount == 0)
         screenshot("21-offline-zero")
     }
 }

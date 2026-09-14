@@ -24,6 +24,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -56,6 +58,7 @@ fun NotebookScreen(model: NotebookViewModel = viewModel()) {
         floatingActionButton = {
             if (!state.loading) ExtendedFloatingActionButton(
                 onClick = { model.clearError(); adding = true },
+                modifier = Modifier.semantics { contentDescription = "Add soil test" },
                 icon = { Icon(Icons.Default.Add, contentDescription = null) },
                 text = { Text("Soil test") },
             )

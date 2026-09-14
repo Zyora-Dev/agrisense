@@ -2,6 +2,12 @@
 
 ## Android Screen Suite - 0.2.0
 
+- Diagnostic run `34823052183`: guest notebook state was loading=false,
+  error=null, and the screenshot showed the Soil test button. Its merged
+  semantics node had OnClick but no Text, explaining the text-selector timeout.
+  Added an explicit Add soil test accessibility description and selected it in
+  the test. Save/reopen-zero and no-cloud-request checks remain required; fixed
+  emulator validation is pending. This was not evidence of a SQLite failure.
 - Run `34820084157` confirmed compilation, eight JVM tests, lint, APK and
   authenticated screen tour pass. All 20 screenshots were retained successfully.
   Guest entry and notebook heading assertions passed; Soil test still timed out.
