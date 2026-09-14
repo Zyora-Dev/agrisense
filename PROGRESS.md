@@ -2,6 +2,11 @@
 
 ## Android Screen Suite - 0.2.0
 
+- Run `34820084157` confirmed compilation, eight JVM tests, lint, APK and
+  authenticated screen tour pass. All 20 screenshots were retained successfully.
+  Guest entry and notebook heading assertions passed; Soil test still timed out.
+  Corrected the diagnostic catch to ComposeTimeoutException and included the
+  guest ViewModel state, since AssertionError did not catch this timeout.
 - Correction commit `6947b8a`, run `34818942524`: app and instrumentation
   compilation, eight JVM tests, lint and APK assembly passed. Authenticated
   20-screen emulator tour passed. Offline notebook test timed out waiting for
@@ -11,7 +16,7 @@
 - Run `34817555583` failed Kotlin compilation before tests/APK generation:
   OkHttp's Kotlin Dns interface cannot accept a lambda, and product soil-list
   saved state needed an explicit List<String> type. Both have been corrected;
-  replacement cloud compilation is pending. Editor diagnostics alone do not
+  replacement cloud compilation passed. Editor diagnostics alone do not
   validate Kotlin builds. The workflow now compiles instrumentation tests before
   emulator startup and preserves screenshots when instrumented tests fail.
 - Implemented Kotlin/Compose login, registration, configurable API connection,
@@ -27,8 +32,8 @@
   cached data is labeled; the SQLite notebook remains phone-wide/local-only.
   Cloud writes require internet; no automatic reading upload/retry is enabled.
 - Added endpoint/date/JSON JVM checks and isolated Compose screen-tour/notebook
-  tests with hosted-emulator screenshots. Local YAML checks pass; editor reports
-  no diagnostics, but Kotlin compilation, lint and emulator results are PENDING.
+  tests with hosted-emulator screenshots. Kotlin compilation, eight JVM tests,
+  lint and the screen tour pass; the offline notebook check remains unresolved.
 - User approved commit/push for GitHub validation. No Android SDK or emulator
   installed on the Mac. Native photo inference, real IoT pairing/communication,
   durable synchronization and physical-phone testing remain unfinished.

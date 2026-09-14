@@ -5,9 +5,11 @@ import android.content.ContentValues
 import android.graphics.Bitmap
 import android.os.Build
 import android.provider.MediaStore
+import androidx.activity.ComponentActivity
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.*
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.lifecycle.ViewModelProvider
 import androidx.test.core.app.ApplicationProvider
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
@@ -20,7 +22,7 @@ import org.junit.Rule
 import org.junit.Test
 
 class ScreenSmokeTest {
-    @get:Rule val compose = createComposeRule()
+    @get:Rule val compose = createAndroidComposeRule<ComponentActivity>()
     private val server = MockWebServer()
     private lateinit var application: Application
     private lateinit var model: AppViewModel
@@ -65,9 +67,12 @@ class ScreenSmokeTest {
     private fun waitFor(text: String) {
         try {
             compose.waitUntil(15_000) { compose.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty() }
-        } catch (failure: AssertionError) {
+        } catch (failure: ComposeTimeoutException) {
             screenshot("failure")
-            throw AssertionError("Waiting for '$text': ${compose.onRoot().printToString()}", failure)
+            val notebookState = compose.runOnIdle {
+                if (model.state.value.guest) ViewModelProvider(compose.activity)[NotebookViewModel::class.java].state.value else null
+            }
+            throw AssertionError("Waiting for '$text', notebook=$notebookState: ${compose.onRoot().printToString()}", failure)
         }
         compose.waitForIdle()
     }
