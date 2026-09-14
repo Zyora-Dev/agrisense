@@ -2,12 +2,22 @@
 
 ## Android Screen Suite - 0.2.0
 
+- Verified fix `04b0290`: run `34823586125` SUCCESS. Eight JVM tests,
+  Android lint, app/test APK compilation, 20-screen authenticated tour and
+  guest notebook save test all passed. Both emulator tests ran, none skipped.
+  Notebook test saved zero, reopened SQLite to check persistence, displayed the
+  value and asserted zero cloud requests. This is emulator/local-mode validation,
+  not a physical-radio disconnection test. Reviewed login, registration,
+  dashboard and saved-notebook screenshots; 21 screenshots are retained.
+- Verified debug APK: `agrisense-debug-8`, artifact `10338574143`:
+  https://github.com/Zyora-Dev/agrisense/actions/runs/34823586125/artifacts/10338574143
+  Reports: `android-reports-8`. Hardware integration remains a later phase.
 - Diagnostic run `34823052183`: guest notebook state was loading=false,
   error=null, and the screenshot showed the Soil test button. Its merged
   semantics node had OnClick but no Text, explaining the text-selector timeout.
   Added an explicit Add soil test accessibility description and selected it in
-  the test. Save/reopen-zero and no-cloud-request checks remain required; fixed
-  emulator validation is pending. This was not evidence of a SQLite failure.
+  the test. Save/reopen-zero and no-cloud-request checks passed in the replacement
+  run above. This was not evidence of a SQLite failure.
 - Run `34820084157` confirmed compilation, eight JVM tests, lint, APK and
   authenticated screen tour pass. All 20 screenshots were retained successfully.
   Guest entry and notebook heading assertions passed; Soil test still timed out.
@@ -39,7 +49,7 @@
   Cloud writes require internet; no automatic reading upload/retry is enabled.
 - Added endpoint/date/JSON JVM checks and isolated Compose screen-tour/notebook
   tests with hosted-emulator screenshots. Kotlin compilation, eight JVM tests,
-  lint and the screen tour pass; the offline notebook check remains unresolved.
+  lint, the screen tour and the offline notebook check now pass.
 - User approved commit/push for GitHub validation. No Android SDK or emulator
   installed on the Mac. Native photo inference, real IoT pairing/communication,
   durable synchronization and physical-phone testing remain unfinished.

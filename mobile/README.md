@@ -14,8 +14,8 @@ required when building through GitHub Actions.
 - Profile, password, active sessions, security activity and sign-out.
 - Encrypted session and account-scoped cloud cache; cached copies show their
   timestamp. Cloud mutations require validated internet and are not auto-retried.
-- New screens are awaiting the current GitHub compile/lint/emulator run. The
-  earlier successful notebook-only APK is not validation of this screen suite.
+- Screen suite build `04b0290` passed GitHub compilation, lint, eight JVM tests
+  and both emulator tests, including the 20-screen tour and local notebook save.
 
 ## Offline notebook
 
@@ -84,10 +84,17 @@ These are requirements, not claims of completed functionality:
 
 ## Verification status
 
-The first GitHub build compiled the Kotlin sources and passed all five JVM tests,
-but Android lint blocked APK assembly on two API compatibility errors. Those
-uses were removed in commit `9dc3766`. Replacement run `34815346535` passed all
-five tests, lint (zero errors, seven non-blocking warnings) and debug APK assembly.
-The APK is available as `agrisense-debug-3` in that run's artifacts:
-https://github.com/Zyora-Dev/agrisense/actions/runs/34815346535
-Phone UI, SQLite persistence and physical Wi-Fi behavior have not been tested.
+Run `34823586125` on commit `04b0290` passed compilation, eight JVM tests,
+Android lint, APK assembly and both API 29 emulator tests (none skipped).
+The screen tour covers 20 authenticated/authentication views. The guest notebook
+test saves a zero-valued reading, verifies it through a newly opened SQLite
+helper, checks its visible value and confirms no cloud API requests were made.
+The prior timeout was a missing accessible name on the visible add button;
+the button now exposes an explicit Add soil test description.
+
+Verified debug APK (`agrisense-debug-8`):
+https://github.com/Zyora-Dev/agrisense/actions/runs/34823586125/artifacts/10338574143
+The `android-reports-8` artifact contains test reports and 21 screenshots.
+Login, registration, dashboard and saved-notebook screenshots were reviewed.
+Live-backend integration, physical-phone/radio-disconnection testing and broader
+device-size coverage are not established by the mock-API emulator tests.
