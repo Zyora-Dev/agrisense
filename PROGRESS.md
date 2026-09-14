@@ -8,8 +8,10 @@
   environment secrets, databases, dependencies, datasets, model artifacts,
   training runs and local editor settings. A recognized-credential-pattern scan
   found no matches in staged content; this is not a comprehensive security audit.
-- The Android workflow will trigger on the initial push. CI build and APK status
-  must be checked on GitHub; local validation does not establish build success.
+- Initial commit `5681a81` pushed successfully to `origin/main`. Android Debug APK
+  run `34814206731` started and was in progress at this checkpoint:
+  https://github.com/Zyora-Dev/agrisense/actions/runs/34814206731
+  No successful build or APK artifact has yet been confirmed.
 
 ## Android Foundation - GitHub Build Prepared
 
